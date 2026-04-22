@@ -1,0 +1,31 @@
+package med.voll.web_application.infra.security;
+
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public UserDetailsService dadosUsuarioCadastrado(){
+        UserDetails usuario1 = User.builder()
+                .username("raphael@teste.com")
+                .password("{noop}1234")
+                .build();
+
+        UserDetails usuario2 = User.builder()
+                .username("tosco@teste.com")
+                .password("{noop}1234")
+                .build();
+
+        return new InMemoryUserDetailsManager(usuario1,usuario2);
+    }
+
+}
