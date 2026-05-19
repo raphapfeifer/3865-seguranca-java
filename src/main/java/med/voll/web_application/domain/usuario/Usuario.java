@@ -1,6 +1,8 @@
 package med.voll.web_application.domain.usuario;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
+@NoArgsConstructor
 public class Usuario implements UserDetails {
 
     @Id
@@ -24,6 +27,11 @@ public class Usuario implements UserDetails {
     @Column
     private String senha;
 
+    public Usuario(String nome, String email, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -38,5 +46,13 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
