@@ -3,6 +3,10 @@ package med.voll.web_application.controller;
 import jakarta.validation.Valid;
 import med.voll.web_application.domain.RegraDeNegocioException;
 import med.voll.web_application.domain.paciente.DadosCadastroPaciente;
+import med.voll.web_application.domain.usuario.Perfil;
+import med.voll.web_application.domain.usuario.Usuario;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import med.voll.web_application.domain.paciente.PacienteService;
 import org.springframework.stereotype.Controller;
@@ -18,11 +22,13 @@ import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("pacientes")
+@PreAuthorize("hasRole('ATENDENTE')")
 public class PacienteController {
 
     private static final String PAGINA_LISTAGEM = "paciente/listagem-pacientes";
     private static final String PAGINA_CADASTRO = "paciente/formulario-paciente";
     private static final String REDIRECT_LISTAGEM = "redirect:/pacientes?sucesso";
+    private static final String PAGINA_ERRO = "erro/500";
 
     private final PacienteService service;
 
@@ -31,7 +37,11 @@ public class PacienteController {
     }
 
     @GetMapping
-    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
+    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model, @AuthenticationPrincipal Usuario logado) {
+        if(logado.getPerfil() != Perfil.ATENDENTE){
+            return PAGINA_ERRO;
+        }
+
         var pacientesCadastrados = service.listar(paginacao);
         model.addAttribute("pacientes", pacientesCadastrados);
         return PAGINA_LISTAGEM;

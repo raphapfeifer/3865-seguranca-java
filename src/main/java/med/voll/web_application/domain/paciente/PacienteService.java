@@ -2,6 +2,9 @@ package med.voll.web_application.domain.paciente;
 
 import jakarta.transaction.Transactional;
 import med.voll.web_application.domain.RegraDeNegocioException;
+import med.voll.web_application.domain.usuario.Perfil;
+import med.voll.web_application.domain.usuario.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,9 +14,13 @@ public class PacienteService {
 
     private final PacienteRepository repository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     public PacienteService(PacienteRepository repository) {
         this.repository = repository;
     }
+
 
     public Page<DadosListagemPaciente> listar(Pageable paginacao) {
         return repository.findAll(paginacao).map(DadosListagemPaciente::new);
@@ -26,7 +33,8 @@ public class PacienteService {
         }
 
         if (dados.id() == null) {
-            repository.save(new Paciente(dados));
+            var id = usuarioService.salvarUsuario(dados.nome(),dados.email(), dados.cpf(),Perfil.PACIENTE);
+            repository.save(new Paciente(id,dados));
         } else {
             var paciente = repository.findById(dados.id()).orElseThrow();
             paciente.modificarDados(dados);

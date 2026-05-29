@@ -6,8 +6,12 @@ import med.voll.web_application.domain.medico.DadosCadastroMedico;
 import med.voll.web_application.domain.medico.DadosListagemMedico;
 import med.voll.web_application.domain.medico.Especialidade;
 import med.voll.web_application.domain.medico.MedicoService;
+import med.voll.web_application.domain.usuario.Perfil;
+import med.voll.web_application.domain.usuario.Usuario;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +26,8 @@ public class MedicoController {
     private static final String PAGINA_LISTAGEM = "medico/listagem-medicos";
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
     private static final String REDIRECT_LISTAGEM = "redirect:/medicos?sucesso";
+    private static final String PAGINA_ERRO = "erro/500";
+
 
     private final MedicoService service;
 
@@ -35,6 +41,7 @@ public class MedicoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ATENDENTE') OR hasRole('PACIENTE')")
     public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
         var medicosCadastrados = service.listar(paginacao);
         model.addAttribute("medicos", medicosCadastrados);
@@ -42,6 +49,7 @@ public class MedicoController {
     }
 
     @GetMapping("formulario")
+    @PreAuthorize("hasRole('ATENDENTE')")
     public String carregarPaginaCadastro(Long id, Model model) {
         if (id != null) {
             model.addAttribute("dados", service.carregarPorId(id));
@@ -53,7 +61,9 @@ public class MedicoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ATENDENTE')")
     public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result, Model model) {
+
         if (result.hasErrors()) {
             model.addAttribute("dados", dados);
             return PAGINA_CADASTRO;
@@ -70,6 +80,7 @@ public class MedicoController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ATENDENTE')")
     public String excluir(Long id) {
         service.excluir(id);
         return REDIRECT_LISTAGEM;

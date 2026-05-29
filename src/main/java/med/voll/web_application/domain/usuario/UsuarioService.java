@@ -26,9 +26,10 @@ public class UsuarioService implements UserDetailsService {
 
     public Long salvarUsuario(@NotBlank String nome,
                               @NotBlank @Email String email,
-                              @NotBlank String senha) {
+                              @NotBlank String senha,
+                              @NotBlank Perfil perfil) {
         var senhaEncriptada = encoder.encode(senha);
-        Usuario usuario = usuarioRepository.save(new Usuario(nome,email,senhaEncriptada));
+        Usuario usuario = usuarioRepository.save(new Usuario(nome,email,senhaEncriptada,perfil));
         return usuario.getId();
     }
 
