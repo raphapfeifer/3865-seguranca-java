@@ -6,14 +6,14 @@
         </a>
 
         <nav class="main-nav">
-            <ul>
+            <ul sec:authorize="isAuthenticated()" class="nav-left">
                 <li class="dropdown">
                     <a href="#">CADASTROS <i class="arrow-down"></i></a>
                     <ul class="dropdown-menu">
-                        <li>
+                        <li sec:authorize="!hasRole('MEDICO')">
                             <a href="../medico/listagem-medicos.html" th:href="@{/medicos}">Médicos</a>
                         </li>
-                        <li>
+                        <li sec:authorize="hasRole('ATENDENTE')">
                             <a href="../consulta/listagem-pacientes.html" th:href="@{/pacientes}">Pacientes</a>
                         </li>
                         <li>
@@ -27,6 +27,9 @@
                     <a href="#">Olá, <span sec:authentication="principal.nome"></span> <i class="arrow-down"></i></a>
                     <ul class="dropdown-menu">
                         <li>
+                            <div class="navbar-form">
+                                <a class="btn-link" href="#" th:href="@{/alterar-senha}">Alterar senha</a>
+                            </div>
                            <form class="navbar-form" th:action="@{/logout}" method="post">
                                <button class="btn-link">Sair</button>
                            </form>
@@ -34,6 +37,9 @@
                     </ul>
                 </li>
             </ul>
+            <div class="navbar-form" sec:authorize="isAuthenticated()">
+                <a class="btn-link" href="#" th:href="@{/login}">Login</a>
+            </div>
         </nav>
     </div>
 </header>
