@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,16 +20,17 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filtrosSeguranca(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filtrosSeguranca(HttpSecurity http, OncePerRequestFilter filtroAlteracaoSenha) throws Exception {
         return http.authorizeHttpRequests(req -> {
                     req.requestMatchers("/css/**", "/js/**", "/assets/**").permitAll();
-                    /*req.requestMatchers("/pacientes/**").hasRole("ATENDENTE");
+                    req.requestMatchers("/pacientes/**").hasRole("ATENDENTE");
                     req.requestMatchers(HttpMethod.GET, "/medicos").hasAnyRole("ATENDENTE", "PACIENTE");
                     req.requestMatchers("/medicos/**").hasRole("ATENDENTE");
                     req.requestMatchers(HttpMethod.POST, "/consultas/**").hasAnyRole("ATENDENTE"," PACIENTE");
-                    req.requestMatchers(HttpMethod.PUT, "/consultas/**").hasAnyRole("ATENDENTE", "PACIENTE");*/
+                    req.requestMatchers(HttpMethod.PUT, "/consultas/**").hasAnyRole("ATENDENTE", "PACIENTE");
                     req.anyRequest().authenticated();
-                }).formLogin(form -> form.loginPage("/login")
+                }).addFilterBefore(filtroAlteracaoSenha, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(form -> form.loginPage("/login")
                 .defaultSuccessUrl("/")
                 .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout")

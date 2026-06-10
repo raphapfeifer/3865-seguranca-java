@@ -41,7 +41,7 @@ public class MedicoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ATENDENTE') OR hasRole('PACIENTE')")
+    //@PreAuthorize("hasRole('ATENDENTE') OR hasRole('PACIENTE')")
     public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
         var medicosCadastrados = service.listar(paginacao);
         model.addAttribute("medicos", medicosCadastrados);
@@ -49,7 +49,7 @@ public class MedicoController {
     }
 
     @GetMapping("formulario")
-    @PreAuthorize("hasRole('ATENDENTE')")
+    //@PreAuthorize("hasRole('ATENDENTE')")
     public String carregarPaginaCadastro(Long id, Model model) {
         if (id != null) {
             model.addAttribute("dados", service.carregarPorId(id));
@@ -61,7 +61,7 @@ public class MedicoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ATENDENTE')")
+    //@PreAuthorize("hasRole('ATENDENTE')")
     public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
@@ -80,7 +80,7 @@ public class MedicoController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('ATENDENTE')")
+    //@PreAuthorize("hasRole('ATENDENTE')")
     public String excluir(Long id) {
         service.excluir(id);
         return REDIRECT_LISTAGEM;

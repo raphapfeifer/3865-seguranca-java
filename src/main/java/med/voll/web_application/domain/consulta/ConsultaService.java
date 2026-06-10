@@ -45,17 +45,17 @@ public class ConsultaService {
         }
     }
 
-    @PreAuthorize("hasRole('ATENDENTE') or" +
-            "(hasRole('PACIENTE') and @consultaRepository.findById(#id).get().paciente.id == principal.id)")
+    /*@PreAuthorize("hasRole('ATENDENTE') or" +
+            "(hasRole('PACIENTE') and @consultaRepository.findById(#id).get().paciente.id == principal.id)")*/
     public DadosAgendamentoConsulta carregarPorId(Long id) {
         var consulta = repository.findById(id).orElseThrow();
         var medicoConsulta = medicoRepository.getReferenceById(consulta.getMedico().getId());
         return new DadosAgendamentoConsulta(consulta.getId(), consulta.getMedico().getId(), consulta.getPaciente().getNome(), consulta.getData(), medicoConsulta.getEspecialidade());
     }
 
-    @PreAuthorize("hasRole('ATENDENTE') or" +
+    /*@PreAuthorize("hasRole('ATENDENTE') or" +
             "(hasRole('PACIENTE') and @consultaRepository.findById(#id).get().paciente.id == principal.id) or " +
-            "(hasRole('MEDICO') and @consultaRepository.findById(#id).get().medico.id == principal.id)")
+            "(hasRole('MEDICO') and @consultaRepository.findById(#id).get().medico.id == principal.id)")*/
     @Transactional
     public void excluir(Long id) {
         repository.deleteById(id);

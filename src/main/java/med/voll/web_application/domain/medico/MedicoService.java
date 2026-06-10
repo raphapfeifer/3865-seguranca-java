@@ -34,7 +34,7 @@ public class MedicoService {
         }
 
         if (dados.id() == null) {
-            var id = usuarioService.salvarUsuario(dados.nome(), dados.email(), dados.crm(), Perfil.MEDICO);
+            var id = usuarioService.salvarUsuario(dados.nome(), dados.email(), Perfil.MEDICO);
             repository.save(new Medico(id ,dados));
         } else {
             var medico = repository.findById(dados.id()).orElseThrow();
